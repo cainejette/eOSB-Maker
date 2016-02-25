@@ -1,10 +1,12 @@
-package eOSB_Maker;
+package actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+
+import eOSB_Maker.Builder;
 
 public class ChooseQuestionDirectoryActionListener implements ActionListener {
 

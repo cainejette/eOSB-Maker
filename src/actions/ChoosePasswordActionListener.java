@@ -1,4 +1,4 @@
-package eOSB_Maker;
+package actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +9,9 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import eOSB_Maker.Builder;
+import eOSB_Maker.Password;
 
 public class ChoosePasswordActionListener implements ActionListener {
 	

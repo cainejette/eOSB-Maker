@@ -1,4 +1,4 @@
-package eOSB_Maker;
+package actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,6 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import eOSB_Maker.Builder;
+import eOSB_Maker.eOSB_Maker;
 
 public class GoMakeEOSBActionListener implements ActionListener {
 

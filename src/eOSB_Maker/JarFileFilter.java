@@ -8,7 +8,7 @@ public class JarFileFilter extends FileFilter {
 
 	@Override
 	public boolean accept(File f) {
-		return f.getName().endsWith("jar");
+		return f.getName().endsWith("jar") || f.isDirectory();
 	}
 
 	@Override

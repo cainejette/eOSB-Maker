@@ -1,4 +1,4 @@
-package eOSB_Maker;
+package actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +10,8 @@ import java.io.IOException;
 import javax.swing.JDialog;
 
 import org.jdatepicker.impl.UtilDateModel;
+
+import eOSB_Maker.Builder;
 
 public class ExpirationDateChosenActionListener implements ActionListener {
 	

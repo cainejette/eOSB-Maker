@@ -45,23 +45,23 @@ public class Builder {
 		
 		panel.setLayout(new MigLayout("wrap 2"));
 		
-		panel.add(createQuestionButton(), "sizegroupx 1");
+		panel.add(ButtonMaker.MakeButton(ButtonTypes.QUESTION, this, this.frame), "sizegroupx 1");
 		panel.add(questionDirectoryLabel);
 
-		panel.add(createExpirationButton(), "sizegroupx 1, gapy 30px");
+		panel.add(ButtonMaker.MakeButton(ButtonTypes.EXPIRATION, this, this.frame), "sizegroupx 1, gapy 30px");
 		panel.add(expirationLabel);		
 		
-		panel.add(createPasswordButton(), "sizegroupx 1, gapy 30px");
+		panel.add(ButtonMaker.MakeButton(ButtonTypes.PASSWORD, this, this.frame), "sizegroupx 1, gapy 30px");
 		panel.add(passwordLabel);
 		
-		panel.add(createBaseButton(), "sizegroupx 1, gapy 30px");
+		panel.add(ButtonMaker.MakeButton(ButtonTypes.BASE, this, this.frame), "sizegroupx 1, gapy 30px");
 		panel.add(baseLabel);
 		
-		panel.add(createGoButton(), "sizegroupx 1, gapy 30px");
+		panel.add(goButton = ButtonMaker.MakeButton(ButtonTypes.GO, this, this.frame), "sizegroupx 1, gapy 30px");
 		panel.add(goLabel);
 		
-		panel.add(createClearButton(), "sizegroupx 1, wrap");
-		panel.add(createExitButton(), "sizegroupx 1");
+		panel.add(ButtonMaker.MakeButton(ButtonTypes.CLEAR, this, this.frame), "sizegroupx 1, wrap");
+		panel.add(ButtonMaker.MakeButton(ButtonTypes.EXIT, this, this.frame), "sizegroupx 1");
 
 		contentPane.add(panel);
 	}
@@ -144,67 +144,14 @@ public class Builder {
 	public File getPasswordFile() {
 		return this.passwordFile;
 	}
-
-	public JButton createQuestionButton() {
-		JButton button = new JButton("Choose question directory");
-		button.addActionListener(new ChooseQuestionDirectoryActionListener(this, this.frame));
-
-		return button;
-	}
-
-	public JButton createExpirationButton() {
-		JButton button = new JButton("Choose expiration date");
-		button.addActionListener(new ChooseExpirationDateActionListener(this, this.frame));
-
-		return button;
-	}
 	
-	public JButton createPasswordButton() {
-		JButton button = new JButton("Set password");
-		button.addActionListener(new ChoosePasswordActionListener(this, this.frame));
-
-		return button;
+	public void clearGoLabel() {
+		this.goLabel.setText("");
 	}
 
-	public JButton createBaseButton() {
-		JButton button = new JButton("Choose base eOSB");
-		button.addActionListener(new ChooseBaseFileActionListener(this, this.frame));
-		
-		return button;
-	}
-	
 	private void updateGoButtonStatus() {
 		boolean shouldEnable = baseFile != null && passwordFile != null && expirationFile != null && questionDirectory != null;
 		goButton.setEnabled(shouldEnable);
-	}
-	
-	public JButton createGoButton() {
-		goButton = new JButton("Generate new eOSB");
-		this.updateGoButtonStatus();
-		goButton.addActionListener(new GoMakeEOSBActionListener(this));
-		
-		return goButton;
-	}
-	
-	private JButton createClearButton() {
-		JButton button = new JButton("Clear");
-		button.addActionListener(new ClearButtonActionListener(this));
-		
-		return button;
-	}
-	
-	private JButton createExitButton() {
-		JButton button = new JButton("Exit");
-		button.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				frame.setVisible(false);
-				frame.dispose();
-				System.exit(0);
-			}
-		});
-		
-		return button;
 	}
 	
 	public void showDone(String output) {

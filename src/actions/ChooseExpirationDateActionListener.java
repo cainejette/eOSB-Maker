@@ -1,4 +1,4 @@
-package eOSB_Maker;
+package actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +18,8 @@ import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
+
+import eOSB_Maker.Builder;
 
 public class ChooseExpirationDateActionListener implements ActionListener {
 
