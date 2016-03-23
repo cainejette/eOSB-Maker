@@ -10,7 +10,6 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
@@ -20,7 +19,7 @@ public class eOSB_Maker {
 		new Builder();
 	}
 
-	public static String updateJarFile(String sourceFileName, List<File> questionFiles, String password, String expiration) throws IOException {
+	public static String updateJarFile(String sourceFileName, File questionDirectory, String password, String expiration) throws IOException {
 		String outputFileName = eOSB_Maker.generateName(sourceFileName);
 		File outputFile = new File(outputFileName);
 		System.out.println("creating jar file: " + outputFileName);
@@ -34,7 +33,7 @@ public class eOSB_Maker {
 				targetJarOutputStream = new JarOutputStream(new FileOutputStream(outputFile));
 				writer = new OutputStreamWriter(targetJarOutputStream);
 				
-				eOSB_Maker.addQuestionsToJar(questionFiles, targetJarOutputStream);
+				eOSB_Maker.addQuestionsToJar(questionDirectory, targetJarOutputStream);
 				eOSB_Maker.addJarEntriesToJar(sourceFileName, targetJarOutputStream);
 				eOSB_Maker.addMetadata(password, "eOSB/game/data/password.txt", targetJarOutputStream, writer);
 				eOSB_Maker.addMetadata(expiration, "eOSB/game/data/expiration.txt", targetJarOutputStream, writer);
@@ -75,8 +74,8 @@ public class eOSB_Maker {
 		return outputFileName;
 	}
 	
-	private static void addQuestionsToJar(List<File> files, JarOutputStream outputStream) {
-		for (File file : files) {
+	private static void addQuestionsToJar(File questionDirectory, JarOutputStream outputStream) {
+		for (File file : questionDirectory.listFiles()) {
 			eOSB_Maker.addFileToJar(file, "eOSB/game/data/questions" + File.separator + file.getName(), outputStream);
 		}		
 	}

@@ -21,14 +21,10 @@ public class GoMakeEOSBActionListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
-		List<File> files = new ArrayList<File>();
-		for (File file : this.builder.getQuestionDirectory().listFiles()) {
-			files.add(file);
-		}
 		try {
 			String path = eOSB_Maker.updateJarFile( 
 					this.builder.getBaseFile().getAbsolutePath(),
-					files, 
+					this.builder.getQuestionDirectory(), 
 					this.builder.getPassword(), 
 					this.builder.getExpiration());
 			
