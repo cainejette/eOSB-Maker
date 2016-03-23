@@ -20,10 +20,10 @@ public class Builder {
 	JLabel questionDirectoryLabel = new JLabel();
 	
 	JLabel passwordLabel = new JLabel();
-	File passwordFile;
+	String password;
 	
 	JLabel expirationLabel = new JLabel();
-	File expirationFile;
+	String expiration;
 	
 	private File baseFile;
 	JLabel baseLabel = new JLabel();
@@ -109,40 +109,40 @@ public class Builder {
 		return this.baseFile;
 	}
 	
-	public void setExpirationFile(File expirationFile, String expiration) {
-		this.expirationFile = expirationFile;
+	public void setExpiration(String expiration) {
+		this.expiration = expiration;
 		
-		if (expirationFile == null) {
+		if (this.expiration != null) {
+			expirationLabel.setText(expiration);			
+		}
+		else {
 			expirationLabel.setText("");
 		}
-		else {
-			expirationLabel.setText(expiration);	
-		}
 		
 		updateGoButtonStatus();
 		frame.pack();
 	}
 	
-	public File getExpirationFile() {
-		return this.expirationFile;
+	public String getExpiration() {
+		return this.expiration;
 	}
-	
-	public void setPasswordFile(File passwordFile) {
-		this.passwordFile = passwordFile;
 		
-		if (passwordFile == null) {
-			passwordLabel.setText("");
-		}
-		else {
+	public void setPassword(String password) {
+		this.password = password;
+		
+		if (this.password != null) {
 			passwordLabel.setText("************");
 		}
+		else {
+			passwordLabel.setText("");
+		}
 		
 		updateGoButtonStatus();
 		frame.pack();
 	}
 	
-	public File getPasswordFile() {
-		return this.passwordFile;
+	public String getPassword() {
+		return this.password;
 	}
 	
 	public void clearGoLabel() {
@@ -150,12 +150,12 @@ public class Builder {
 	}
 
 	private void updateGoButtonStatus() {
-		boolean shouldEnable = baseFile != null && passwordFile != null && expirationFile != null && questionDirectory != null;
+		boolean shouldEnable = baseFile != null && expiration != null && password != null && questionDirectory != null;
 		goButton.setEnabled(shouldEnable);
 	}
 	
 	public void showDone(String output) {
-		goLabel.setText("Wrote: " + output);
+		goLabel.setText("Created: " + output);
 		goLabel.setVisible(true);
 		frame.pack();
 	}

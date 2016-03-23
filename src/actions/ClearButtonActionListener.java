@@ -16,8 +16,8 @@ public class ClearButtonActionListener implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.builder.setBaseFile(null);
-		this.builder.setExpirationFile(null, "");
-		this.builder.setPasswordFile(null);
+		this.builder.setExpiration(null);
+		this.builder.setPassword(null);
 		this.builder.setQuestionDirectory(null);
 		this.builder.clearGoLabel();
 	}

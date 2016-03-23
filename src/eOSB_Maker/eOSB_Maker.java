@@ -2,10 +2,11 @@ package eOSB_Maker;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Enumeration;
@@ -16,72 +17,62 @@ import java.util.jar.JarOutputStream;
 
 public class eOSB_Maker {
 	public static void main(String[] args) {
-		Builder builder = new Builder();
+		new Builder();
 	}
 
-	public static String updateJarFile(String sourceFileName, List<File> questionFiles, File passwordFile, File expirationFile) throws IOException {
+	public static String updateJarFile(String sourceFileName, List<File> questionFiles, String password, String expiration) throws IOException {
+		String outputFileName = eOSB_Maker.generateName(sourceFileName);
+		File outputFile = new File(outputFileName);
+		System.out.println("creating jar file: " + outputFileName);
+		
+		if (outputFile.createNewFile()) {
+			JarOutputStream targetJarOutputStream = null;
+			Writer writer = null;			
+			boolean jarUpdated = false;
+			
+			try {
+				targetJarOutputStream = new JarOutputStream(new FileOutputStream(outputFile));
+				writer = new OutputStreamWriter(targetJarOutputStream);
+				
+				eOSB_Maker.addQuestionsToJar(questionFiles, targetJarOutputStream);
+				eOSB_Maker.addJarEntriesToJar(sourceFileName, targetJarOutputStream);
+				eOSB_Maker.addMetadata(password, "eOSB/game/data/password.txt", targetJarOutputStream, writer);
+				eOSB_Maker.addMetadata(expiration, "eOSB/game/data/expiration.txt", targetJarOutputStream, writer);
+
+				jarUpdated = true;
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				targetJarOutputStream.close();
+				writer.close();
+
+				if (!jarUpdated) {
+					outputFile.delete();
+					return "failed :(";
+				}
+			}
+
+			return outputFile.getAbsolutePath();
+			
+		}
+		else {
+			outputFile.delete();
+			return "failed :(";
+		}
+	}
+	
+	private static String generateName(String sourceFileName) {
 		String currentTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 		
-		File outputFile;
 		String outputFileName;
 		if (sourceFileName.contains(".jar")) {
-			outputFileName = sourceFileName.substring(0, sourceFileName.length() - 4) + currentTime + ".jar";
+			outputFileName = sourceFileName.substring(0, sourceFileName.length() - 4) + "_" + currentTime + ".jar";
 		}
 		else {
 			outputFileName = sourceFileName + currentTime + ".jar";
 		}
 		
-		outputFile = new File(outputFileName);
-		System.out.println("creating jar file: " + outputFileName);
-		
-		if (outputFile.createNewFile()) {
-			System.out.println(outputFile.getName() + " created.");
-			
-			JarFile sourceJarFile = new JarFile(sourceFileName);
-			boolean jarUpdated = false;
-			System.out.println("original: " + sourceFileName);
-
-			try {
-				JarOutputStream targetJarOutputStream = new JarOutputStream(new FileOutputStream(outputFile));
-
-				try {
-					eOSB_Maker.addQuestionsToJar(questionFiles, targetJarOutputStream);
-					eOSB_Maker.addFileToJar(passwordFile, "eOSB/game/data" + File.separator + passwordFile.getName(), targetJarOutputStream);
-					eOSB_Maker.addFileToJar(expirationFile, "eOSB/game/data" + File.separator + expirationFile.getName(), targetJarOutputStream);
-					eOSB_Maker.addJarEntriesToJar(sourceJarFile, targetJarOutputStream);
-
-					jarUpdated = true;
-				} catch (Exception ex) {
-					ex.printStackTrace();
-					targetJarOutputStream.putNextEntry(new JarEntry("stub"));
-				} finally {
-					targetJarOutputStream.close();
-					System.out.println(outputFile.getAbsolutePath() + " path");
-					System.out.println(outputFile.getName() + " closed.");
-				}
-
-			} finally {
-				sourceJarFile.close();
-				System.out.println(sourceJarFile.getName() + " closed.");
-
-				if (!jarUpdated) {
-					outputFile.delete();
-				}
-			}
-
-			if (jarUpdated) {				
-				passwordFile.delete();
-				expirationFile.delete();
-				
-				return outputFile.getAbsolutePath();
-			}
-			else {
-				return "failed :( Reason: jarUpdated is false.";
-			}
-		}
-		else {
-			return "failed :( Reason: tmpJarFile.createNewFile returned false.";
-		}
+		return outputFileName;
 	}
 	
 	private static void addQuestionsToJar(List<File> files, JarOutputStream outputStream) {
@@ -105,31 +96,45 @@ public class eOSB_Maker {
 			System.out.println(entry.getName() + " added.");
 		}
 		 catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		finally {
 			try {
 				fis.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 	
-	private static void addJarEntriesToJar(JarFile source, JarOutputStream outputStream) {
-		Enumeration jarEntries = source.entries();
-		while (jarEntries.hasMoreElements()) {
-			JarEntry entry = (JarEntry) jarEntries.nextElement();
+	private static void addMetadata(String data, String path, JarOutputStream outputStream, Writer writer) {
+		JarEntry entry = new JarEntry(path);
+		try {
+			outputStream.putNextEntry(entry);
+
+			writer.write(data);
+			writer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void addJarEntriesToJar(String sourceFileName, JarOutputStream outputStream) {
+		JarFile source = null;
+		
+		try {
+			source = new JarFile(sourceFileName);
+	
+			Enumeration<JarEntry> jarEntries = source.entries();
+			while (jarEntries.hasMoreElements()) {
+				JarEntry entry = (JarEntry) jarEntries.nextElement();
+				
+				if (entry.getName().contains("password.txt") ||
+						entry.getName().contains("expiration.txt") ||
+						entry.getName().contains("questions/")) {
+					continue;
+				}
 			
-			if (entry.getName().contains("password.txt") ||
-					entry.getName().contains("expiration.txt") ||
-					entry.getName().contains("questions/")) {
-				continue;
-			}
-			
-			try {
 				InputStream entryInputStream = source.getInputStream(entry);
 				outputStream.putNextEntry(entry);
 				
@@ -138,9 +143,16 @@ public class eOSB_Maker {
 				while ((bytesRead = entryInputStream.read(buffer)) != -1) {
 					outputStream.write(buffer, 0, bytesRead);
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (source != null) {				
+				try {
+					source.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

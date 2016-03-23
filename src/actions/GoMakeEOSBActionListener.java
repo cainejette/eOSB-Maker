@@ -29,8 +29,8 @@ public class GoMakeEOSBActionListener implements ActionListener {
 			String path = eOSB_Maker.updateJarFile( 
 					this.builder.getBaseFile().getAbsolutePath(),
 					files, 
-					this.builder.getPasswordFile(), 
-					this.builder.getExpirationFile());
+					this.builder.getPassword(), 
+					this.builder.getExpiration());
 			
 			this.builder.showDone(path);
 		} 

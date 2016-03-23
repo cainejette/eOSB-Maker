@@ -31,7 +31,7 @@ public class ExpirationDateChosenActionListener implements ActionListener {
 		String expirationP = model.getYear() + "/" + (model.getMonth() + 1) + "/" + model.getDay();
 		
 		File expirationFile = new File("expiration.txt");
-		this.builder.setExpirationFile(expirationFile, expirationP);
+		this.builder.setExpiration(expirationP);
 		BufferedWriter writer = null;
 		try {
 			writer = new BufferedWriter(new FileWriter(expirationFile));

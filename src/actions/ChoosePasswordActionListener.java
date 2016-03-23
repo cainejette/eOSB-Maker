@@ -2,10 +2,6 @@ package actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -64,33 +60,11 @@ public class ChoosePasswordActionListener implements ActionListener {
 			else {
 				password = secondPasswordAttempt;
 				
-				String saltHashPass;
 				try {
-					saltHashPass = Password.getSaltedHash(password);
-					
-					File passwordFile = new File("password.txt");
-					this.builder.setPasswordFile(passwordFile);
-					
-					BufferedWriter writer = null;
-					try {
-						writer = new BufferedWriter(new FileWriter(passwordFile));
-			            writer.write(saltHashPass);
-					} 
-					catch (IOException e1) {
-						e1.printStackTrace();
-					} 
-					finally {
-						try {
-							writer.close();
-						} 
-						catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
-					
+					String saltHashPass = Password.getSaltedHash(password);
+					this.builder.setPassword(saltHashPass);
 				} 
 				catch (Exception e2) {
-					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
 			}
