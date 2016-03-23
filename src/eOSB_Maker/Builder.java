@@ -3,6 +3,7 @@ package eOSB_Maker;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -85,26 +86,18 @@ public class Builder {
 		frame.pack();
 	}
 	
-	public File getQuestionDirectory() {
-		return this.questionDirectory;
-	}
-	
-	public void setBaseFile(File baseFile) {
-		this.baseFile = baseFile;
+	public void setBaseFile(File file) {
+		this.baseFile = file;
 		
-		if (baseFile == null) {
+		if (file == null) {
 			baseLabel.setText("");
 		}
 		else {
-			baseLabel.setText(baseFile.getAbsolutePath());	
+			baseLabel.setText(file.getAbsolutePath());	
 		}
 		
 		updateGoButtonStatus();
 		frame.pack();
-	}
-	
-	public File getBaseFile() {
-		return this.baseFile;
 	}
 	
 	public void setExpiration(String expiration) {
@@ -120,11 +113,7 @@ public class Builder {
 		updateGoButtonStatus();
 		frame.pack();
 	}
-	
-	public String getExpiration() {
-		return this.expiration;
-	}
-		
+			
 	public void setPassword(String password) {
 		this.password = password;
 		
@@ -139,10 +128,6 @@ public class Builder {
 		frame.pack();
 	}
 	
-	public String getPassword() {
-		return this.password;
-	}
-	
 	public void clearGoLabel() {
 		this.goLabel.setText("");
 	}
@@ -152,9 +137,23 @@ public class Builder {
 		goButton.setEnabled(shouldEnable);
 	}
 	
-	public void showDone(String output) {
+	private void showDone(String output) {
 		goLabel.setText("Created: " + output);
 		goLabel.setVisible(true);
 		frame.pack();
+	}
+	
+	public void generateEOSB() {
+		try {
+			String path = eOSB_Maker.updateJarFile( 
+					baseFile.getAbsolutePath(),
+					questionDirectory, 
+					password, 
+					expiration);
+			
+			this.showDone(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
