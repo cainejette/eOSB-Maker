@@ -76,7 +76,7 @@ public class eOSB_Maker {
 	
 	private static void addQuestionsToJar(File questionDirectory, JarOutputStream outputStream) {
 		for (File file : questionDirectory.listFiles()) {
-			eOSB_Maker.addFileToJar(file, "eOSB/game/data/questions" + File.separator + file.getName(), outputStream);
+			eOSB_Maker.addFileToJar(file, "eOSB/game/data/questions/" + file.getName(), outputStream);
 		}		
 	}
 	
